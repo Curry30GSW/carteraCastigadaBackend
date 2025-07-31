@@ -6,6 +6,7 @@ const app = express();
 const dotenv = require('dotenv');
 const castigadosRoutes = require('./routes/castigadosRoutes');
 const loginRoutes = require('./routes/loginRoutes');
+const auditoriaRoutes = require('./routes/auditoriaRoutes');
 
 app.use(session({
     secret: process.env.JWT_SECRET,
@@ -40,6 +41,7 @@ app.get('/', (req, res) => {
 // Rutas
 app.use('/api', castigadosRoutes);
 app.use('/api', loginRoutes);
+app.use('/api', auditoriaRoutes);
 
 const startServer = async () => {
     try {
