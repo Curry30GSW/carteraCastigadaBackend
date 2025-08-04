@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 const odbc = require('odbc');
 
 const connectionString = `DSN=${process.env.ODBC_DSN};UID=${process.env.ODBC_USER};PWD=${process.env.ODBC_PASSWORD};CCSID=1208`;

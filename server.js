@@ -8,6 +8,14 @@ const castigadosRoutes = require('./routes/castigadosRoutes');
 const loginRoutes = require('./routes/loginRoutes');
 const auditoriaRoutes = require('./routes/auditoriaRoutes');
 
+// Carga el archivo .env correcto según el entorno
+dotenv.config({
+  path: `.env.${process.env.NODE_ENV || 'development'}` // Por defecto usa .env.development
+});
+
+const PORT = process.env.PORT || 5006;
+
+// Configuración de sesión (usa JWT_SECRET del .env cargado)
 app.use(session({
     secret: process.env.JWT_SECRET,
     resave: false,
@@ -15,23 +23,18 @@ app.use(session({
     cookie: { secure: false }
 }));
 
-
-
-dotenv.config();
-const PORT = process.env.PORT || 3000;
-
-
 // Cors Configuration
 app.use(cors({
-    origin: ["http://127.0.0.1:5502", "http://localhost:5000"],
+    origin: [
+        "http://srv-bog-tes.coopserp.com/",
+        "http://190.66.10.148:10704"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
 
 app.use(express.json());
-
-
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -46,11 +49,16 @@ app.use('/api', auditoriaRoutes);
 const startServer = async () => {
     try {
         await connectToDatabase();
-        app.listen(PORT, () => {
-            console.log(`Servidor iniciado en http://localhost:${PORT}`);
-        });
+        app.listen(PORT, '0.0.0.0', () => {
+            console.log(`
+              ========================================
+              🚀 Servidor iniciado en modo ${process.env.NODE_ENV}
+              📡 Escuchando en el puerto: ${PORT}
+              ========================================
+            `);
+        });        
     } catch (error) {
-        console.error('No se pudo conectar a la base de datos. Verifica tu configuración.');
+        console.error('Error al iniciar el servidor:', error.message);
         process.exit(1);
     }
 };
